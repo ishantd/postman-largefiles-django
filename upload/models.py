@@ -11,6 +11,7 @@ class FileItem(models.Model):
     uploaded = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
     processed = models.BooleanField(default=False)
+    processing_time = models.CharField(max_length=120, null=True, blank=True)
 
     @property
     def title(self):

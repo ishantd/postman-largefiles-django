@@ -3,8 +3,12 @@ from django.http import JsonResponse
 from rest_framework.views import APIView
 
 from upload.utils import the_file_is_csv
+from data.utils import start_csv_processing
+
 from upload.models import FileItem
 from braces.views import CsrfExemptMixin
+
+import threading
 
 class Files(CsrfExemptMixin, APIView):
     
@@ -23,6 +27,8 @@ class Files(CsrfExemptMixin, APIView):
                 )
                 if file_uploaded:
                     f.uploaded = True
-                    f.save()                
-        
+                    f.save()
+        t = threading.Thread(target=start_csv_processing)             
+        t.setDaemon(True)
+        t.start()
         return JsonResponse({"status": "ok"}, status=200)
