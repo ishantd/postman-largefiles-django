@@ -41,7 +41,6 @@ class ProcessCSV:
 
 
 def start_csv_processing():
-    print(settings.BASE_DIR)
     p = ProcessCSV()
     p.start_file_processing()
     return True
