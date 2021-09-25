@@ -28,5 +28,8 @@ class Files(CsrfExemptMixin, APIView):
                 if file_uploaded:
                     f.uploaded = True
                     f.save()
+        return JsonResponse({"status": "ok"}, status=200)
+    
+    def put(self, request, *args, **kwargs):
         start_thread_process(start_csv_processing)
         return JsonResponse({"status": "ok"}, status=200)
