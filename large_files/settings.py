@@ -19,8 +19,6 @@ import json
 SETTINGS_DIR = Path(__file__).resolve().parent
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-print(SETTINGS_DIR)
-
 try:
     with open(os.path.join(SETTINGS_DIR, 'creds/config.json')) as f:
         configs = json.loads(f.read())
