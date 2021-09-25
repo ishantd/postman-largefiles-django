@@ -1,9 +1,13 @@
 {% extends "home/base.html" %}
 
-
+{% load static %}
 
 {% block content %}
 
 <h1>Upload file</h1>
 
 {% endblock %}
+
+{% block my_js %}
+<script src="{% static 'home/js/index.js' %}"></script>
+{% endblock my_js %}
