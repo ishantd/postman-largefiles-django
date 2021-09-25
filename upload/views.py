@@ -8,8 +8,6 @@ from data.utils import start_csv_processing, start_thread_process
 from upload.models import FileItem
 from braces.views import CsrfExemptMixin
 
-import threading
-
 class Files(CsrfExemptMixin, APIView):
     
     def get(self, request, *args, **kwargs):
