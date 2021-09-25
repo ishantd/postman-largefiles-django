@@ -9,6 +9,11 @@ from tqdm import tqdm
 import pandas as pd
 import threading
 
+def start_thread_process(target):
+    t = threading.Thread(target=target)             
+    t.setDaemon(True)
+    t.start()
+
 class ProcessCSV:
     
     def __init__(self):
@@ -19,7 +24,7 @@ class ProcessCSV:
     def create_pandas_object(self, file):
         return pd.read_csv(file.file.path)
     
-    def save_df_into_db(self, df, file, index):
+    def save_df_into_db(self, df, file):
         products = []
         for row in tqdm(df.itertuples()):
             products.append(
@@ -34,19 +39,25 @@ class ProcessCSV:
         file.save()
         return products
     
-    def aggregate_data_into_table(self, products):
+    def aggregate_data_into_table(self):
         fieldname = 'name'
         product_count = list(Product.objects.all().values(fieldname).order_by(fieldname).annotate(product_count=Count(fieldname)))
         product_count_objects = [ProductAggregate(name=p["name"], product_count=p["product_count"]) for p in product_count]
         ProductAggregate.objects.all().delete()
         new_product_aggregate = ProductAggregate.objects.bulk_create(objs=product_count_objects)
+        print("FINISHED AGGREGATING DATA")
         return new_product_aggregate
     
+    def process_all_files(self, file_id):
+        file = self.files.get(id=file_id)
+        df = self.create_pandas_object(file)
+        saved_to_db = self.save_df_into_db(df, file)
+        return saved_to_db
+    
     def start_file_processing(self):
-        if len(self.processed_files) == 0 and len(self.files) == 1:
-            df = self.create_pandas_object(self.files[0])
-            saved_to_db = self.save_df_into_db(df, self.files[0], 0)
-            aggregated_data = self.aggregate_data_into_table(saved_to_db)
+        [self.process_all_files(f.id) for f in self.files]
+        print("STARTING AGGREGATING DATA")
+        start_thread_process(self.aggregate_data_into_table)
         return True
         
 
