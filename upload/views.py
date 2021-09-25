@@ -2,12 +2,27 @@ from django.http import JsonResponse
 
 from rest_framework.views import APIView
 
+from upload.utils import the_file_is_csv
+from upload.models import FileItem
 from braces.views import CsrfExemptMixin
 
 class Files(CsrfExemptMixin, APIView):
     
+    def get(self, request, *args, **kwargs):
+        files = list(FileItem.objects.all().values())
+        return JsonResponse({"status": "ok", "files": files}, status=200)
+    
     def post(self, request, *args, **kwargs):
         files = request.FILES.getlist('files[]')
-        print(files, type(files))
+        for file in files:
+            if the_file_is_csv(file.name):
+                f, file_uploaded = FileItem.objects.get_or_create(
+                    name=file.name,
+                    file=file,
+                    file_type='csv'
+                )
+                if file_uploaded:
+                    f.uploaded = True
+                    f.save()                
         
         return JsonResponse({"status": "ok"}, status=200)
