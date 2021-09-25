@@ -1,1 +1,1 @@
-console.log("Hello");
+$('#csvfile').fileupload();

@@ -4,7 +4,9 @@
 
 {% block content %}
 
-<h1>Upload file</h1>
+<h4>Upload files here</h4>
+
+<input type="file" id="csvfile" name="files[]" data-url="{% url 'upload:files' %}" multiple>
 
 {% endblock %}
 
