@@ -31,7 +31,7 @@
             <button type="button" class="btn btn-info" id="update">Update Record by SKU</button>
         </div>
         <div class="col-4">
-            <button type="button" class="btn btn-info" id="view">View Stats</button>
+            <button type="button" class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" id="view">View Stats</button>
         </div>
     </div>
 
@@ -80,6 +80,26 @@
     </div>
 </div>
 
+<div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Some quick stats about the DB</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <ul>
+        <li>Total Product Count : {{product_count}}</li>
+        <li>Total Aggregate Table Count : {{aggregate_table_count}}</li>
+    </ul>
+    <h5 class="my-3">
+        Users with most products (Top 15):
+    </h5>
+    <ul class="list-group">
+        {% for user in aggregate_list %}
+            <li class="list-group-item">{{user.name}} - {{user.product_count}} </li>
+        {% endfor %}
+    </ul>
+  </div>
+</div>
 
 {% endblock %}
 
