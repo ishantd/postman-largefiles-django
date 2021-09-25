@@ -24,7 +24,7 @@ class ProcessCSV:
             products.append(
                 Product(
                     name=row[1],
-                    sku=f'{row[2]}-{random_string_generator(8)}',
+                    sku=row[2] if index==0 else f'{row[2]}-{random_string_generator(8)}',
                     description=row[3]
                 )
             )
@@ -43,4 +43,5 @@ class ProcessCSV:
 def start_csv_processing():
     p = ProcessCSV()
     p.start_file_processing()
+    print("HAHAHHA DONE!!!")
     return True
