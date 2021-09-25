@@ -18,5 +18,20 @@ function start_file_processing(data = {}) {
         }
     });
 }
-$('#csvfile').fileupload().on('fileuploaddone', function(e, data) { console.log("STAT");
-    start_file_processing(); });
+$('#csvfile').fileupload({
+    progressall: function(e, data) {
+        var progress = parseInt(data.loaded / data.total * 100, 10);
+        $('#progress .bar').css(
+            'width',
+            progress + '%'
+        );
+        $('#progress .bar').attr({
+            "aria-valuenow": progress + '%',
+        });
+        $('#progress .bar').text(
+            progress + '%'
+        );
+    }
+}).on('fileuploaddone', function(e, data) {
+    start_file_processing();
+});
