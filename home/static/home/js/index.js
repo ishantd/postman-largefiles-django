@@ -87,7 +87,7 @@ $("#reset").click(function() {
     location.reload();
 });
 
-$("#reset").click(function() {
+$("#save-product").click(function() {
     var sku = $("#sku-search").val();
     if (!sku) {
         bsalert('SKU Field cannot be blank!', 'danger');
