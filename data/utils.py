@@ -9,6 +9,8 @@ from tqdm import tqdm
 import pandas as pd
 import threading
 
+import timeit
+
 def start_thread_process(target):
     t = threading.Thread(target=target)             
     t.setDaemon(True)
@@ -22,9 +24,20 @@ class ProcessCSV:
         self.pandas_frames = []
     
     def create_pandas_object(self, file):
-        return pd.read_csv(file.file.path)
+        start, stop = None, None
+        start = timeit.default_timer()
+        db_action = start_db_action("Read CSV into Pandas", "In Progress")
+        df = pd.read_csv(file.file.path)
+        db_action = modify_db_status(db_action.id, "Completed")
+        stop = timeit.default_timer()
+        if start and stop:
+            time_this_function(start, stop, db_action.id)
+        return df
     
     def save_df_into_db(self, df, file):
+        start, stop = None, None
+        start = timeit.default_timer()
+        db_action = start_db_action("Saving Pandas Dataframe in PostgreSQL DB", "In Progress")
         products = []
         for row in tqdm(df.itertuples()):
             products.append(
@@ -37,15 +50,25 @@ class ProcessCSV:
         products = Product.objects.bulk_create(objs=products)
         file.processed = True
         file.save()
+        db_action = modify_db_status(db_action.id, "Completed")
+        stop = timeit.default_timer()
+        if start and stop:
+            time_this_function(start, stop, db_action.id)
         return products
     
     def aggregate_data_into_table(self):
+        start, stop = None, None
+        start = timeit.default_timer()
+        db_action = start_db_action("Aggregating Data in Products Table", "In Progress")
         fieldname = 'name'
         product_count = list(Product.objects.all().values(fieldname).order_by(fieldname).annotate(product_count=Count(fieldname)))
         product_count_objects = [ProductAggregate(name=p["name"], product_count=p["product_count"]) for p in product_count]
         ProductAggregate.objects.all().delete()
         new_product_aggregate = ProductAggregate.objects.bulk_create(objs=product_count_objects)
-        print("FINISHED AGGREGATING DATA")
+        db_action = modify_db_status(db_action.id, "Completed")
+        stop = timeit.default_timer()
+        if start and stop:
+            time_this_function(start, stop, db_action.id)
         return new_product_aggregate
     
     def process_all_files(self, file_id):
@@ -69,7 +92,16 @@ def modify_db_status(id, status):
     db.save()
     return db
 
+def finish_db_action(id, time):
+    db = DatabaseAction.objects.get(id=id)
+    db.time_taken = time
+    db.save()
+    return db
 
+def time_this_function(start, stop, id):
+    execution_time = stop - start
+    finish_db_action(id, str(execution_time))
+    return True
 
 def start_csv_processing():
     p = ProcessCSV()
