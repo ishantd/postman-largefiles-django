@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.8.3-alpine
+FROM python:3.8-slim
 
 # set work directory
 RUN mkdir /code
@@ -9,18 +9,22 @@ WORKDIR /code
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apk add --no-cache --update \
-    python3 python3-dev gcc \
-    gfortran musl-dev g++ \
-    libffi-dev openssl-dev \
-    libxml2 libxml2-dev \
-    libxslt libxslt-dev \
-    libjpeg-turbo-dev zlib-dev \
-    libsodium-dev build-base libzmq musl-dev zeromq-dev
+# RUN apk add --no-cache --update \
+#     python3 python3-dev gcc \
+#     gfortran musl-dev g++ \
+#     libffi-dev openssl-dev \
+#     libxml2 libxml2-dev \
+#     libxslt libxslt-dev \
+#     libjpeg-turbo-dev zlib-dev \
+#     libsodium-dev build-base libzmq musl-dev zeromq-dev
 
-# install psycopg2 dependencies
-RUN apk update \
-    && apk add postgresql-dev gcc python3-dev musl-dev
+# # install psycopg2 dependencies
+# RUN apk update \
+#     && apk add postgresql-dev gcc python3-dev musl-dev
+
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc \
+    && pip install psycopg2
 
 # install dependencies
 RUN pip install --upgrade pip
@@ -39,4 +43,4 @@ RUN chmod +x /code/entrypoint.sh
 COPY . /code/
 
 # run entrypoint.sh
-ENTRYPOINT ["sh", "/code/entrypoint.sh"]
+ENTRYPOINT ["sh", "/code/entrypoint-2.sh"]
