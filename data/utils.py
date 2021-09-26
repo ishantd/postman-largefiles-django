@@ -61,7 +61,7 @@ class ProcessCSV:
         stop = timeit.default_timer()
         if start and stop:
             time_this_function(start, stop, db_action.id)
-        return products
+        return True
     
     def aggregate_data_into_table(self):
         start, stop = None, None
