@@ -101,3 +101,7 @@ $("#save-product").click(function() {
         });
     }
 });
+
+$(document).ready(function() {
+    $('#example').DataTable();
+} );

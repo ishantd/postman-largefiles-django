@@ -4,6 +4,7 @@
 
 {% block my_css %}
     <link rel="stylesheet" href="{% static 'home/css/index.css' %}">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap5.min.css">
 {% endblock my_css %}
 
 {% block content %}
@@ -32,6 +33,36 @@
         </div>
         <div class="col-4">
             <button type="button" class="btn btn-info" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" id="view">View Stats</button>
+        </div>
+    </div>
+
+    <div class="row my-5">
+        <div class="col-12">
+            Time taken for various queries and process:
+        </div>
+        <div class="dt">
+            <table id="example" class="table table-striped" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Process Name</th>
+                        <th>Status</th>
+                        <th>Time Started</th>
+                        <th>Time Finished</th>
+                        <th>Total Time Taken</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in dbs %}
+                        <tr>
+                            <td>{{d.name}}</td>
+                            <td>{{d.status}}</td>
+                            <td>{{d.time_started}}</td>
+                            <td>{{d.time_finished}}</td>
+                            <td>{{d.time_taken}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
 
@@ -139,4 +170,6 @@
 
 {% block my_js %}
 <script src="{% static 'home/js/index.js' %}"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap5.min.js"></script>
 {% endblock my_js %}
