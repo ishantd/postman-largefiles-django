@@ -10,6 +10,20 @@ from braces.views import CsrfExemptMixin
 
 class Products(CsrfExemptMixin, APIView):
     
+    # def bulk_via_csv(df, columns, model_cls):
+    #     """ Inserting 3000 takes 118ms avg """
+    #     engine = ExcelImportProcessor._get_sqlalchemy_engine()
+    #     connection = engine.raw_connection()
+    #     cursor = connection.cursor()
+    #     output = StringIO()
+    #     df[columns].to_csv(output, sep='\t', header=False, index=False)
+    #     output.seek(0)
+    #     contents = output.getvalue()
+    #     cur = connection.cursor()
+    #     cur.copy_from(output, model_cls._meta.db_table, null="", columns=columns)
+    #     connection.commit()
+    #     cur.close()
+    
     def get(self, request, *args, **kwargs):
         query = request.query_params.get('sku', False)
         try:

@@ -3,8 +3,10 @@ from upload.models import FileItem
 from upload.utils import random_string_generator
 
 from django.conf import settings
+from django.db import connection
 from django.db.models import Count, aggregates
 
+from sqlalchemy import create_engine
 from tqdm import tqdm
 import pandas as pd
 import threading
@@ -22,6 +24,7 @@ class ProcessCSV:
         self.files = FileItem.objects.filter(processed=False)
         self.processed_files = FileItem.objects.filter(processed=True)
         self.pandas_frames = []
+        self.conn_default = create_engine(settings.DB_URI_DEFAULT).connect()
     
     def create_pandas_object(self, file):
         start, stop = None, None
@@ -38,16 +41,20 @@ class ProcessCSV:
         start, stop = None, None
         start = timeit.default_timer()
         db_action = start_db_action("Saving Pandas Dataframe in PostgreSQL DB", "In Progress")
-        products = []
-        for row in tqdm(df.itertuples()):
-            products.append(
-                Product(
-                    name=row[1],
-                    sku=f'{row[2]}-{random_string_generator(8)}',
-                    description=row[3]
-                )
-            )
-        products = Product.objects.bulk_create(objs=products)
+        for i in df.index:
+            df.at[i, "sku"] = f'{df.at[i, "sku"]}-{random_string_generator(8)}'
+        df.to_sql('data_product', if_exists='append',index=False,con=self.conn_default)
+        # products = []
+        # for row in tqdm(df.itertuples()):
+        #     products.append(
+        #         Product(
+        #             name=row[1],
+        #             sku=f'{row[2]}-{random_string_generator(8)}',
+        #             description=row[3]
+        #         )
+        #     )
+        # products = Product.objects.bulk_create(objs=products)
+        
         file.processed = True
         file.save()
         db_action = modify_db_status(db_action.id, "Completed")
