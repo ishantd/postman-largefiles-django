@@ -112,7 +112,7 @@ DATABASES = {
     }
 }
 
-DB_URI_DEFAULT = f'postgresql://{os.environ.get("SQL_USER", DB_CONFIG["USER"])}:123@{os.environ.get("SQL_HOST", DB_CONFIG["HOST"])}:{os.environ.get("SQL_PORT", DB_CONFIG["PORT"])}/{os.environ.get("SQL_DATABASE", DB_CONFIG["NAME"])}'
+DB_URI_DEFAULT = f'postgresql://{os.environ.get("SQL_USER", DB_CONFIG["USER"])}:{os.environ.get("SQL_PASSWORD", DB_CONFIG["PASSWORD"])}@{os.environ.get("SQL_HOST", DB_CONFIG["HOST"])}:{os.environ.get("SQL_PORT", DB_CONFIG["PORT"])}/{os.environ.get("SQL_DATABASE", DB_CONFIG["NAME"])}'
 print(DB_URI_DEFAULT)
 
 CACHES = {
