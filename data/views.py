@@ -1,3 +1,4 @@
+from upload.models import FileItem
 from django.http import JsonResponse
 from django.forms import model_to_dict
 
@@ -54,3 +55,11 @@ class DatabaseActions(CsrfExemptMixin, APIView):
         db.status = status
         db.save()
         return JsonResponse({"status": "ok", "db": model_to_dict(db)}, status=200)
+
+class ResetDB(CsrfExemptMixin, APIView):
+    def get(self, request, *args, **kwargs):
+        DatabaseAction.objects.all().delete()
+        Product.objects.all().delete()
+        ProductAggregate.objects.all().delete()
+        FileItem.objects.all().delete()
+        return JsonResponse({"status": "ok"}, status=200)

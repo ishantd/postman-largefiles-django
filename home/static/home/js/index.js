@@ -1,7 +1,7 @@
 var alertPlaceholder = document.getElementById('liveAlertPlaceholder')
 var alertTrigger = document.getElementById('liveAlertBtn')
 
-function alert(message, type) {
+function bsalert(message, type) {
     var wrapper = document.createElement('div')
     wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
 
@@ -10,7 +10,7 @@ function alert(message, type) {
 
 if (alertTrigger) {
     alertTrigger.addEventListener('click', function() {
-        alert('Nice, you triggered this alert message!', 'success')
+        bsalert('Nice, you triggered this alert message!', 'success')
     })
 }
 
@@ -61,13 +61,13 @@ function clear_sku_form() {
 $("#sku-search-button").click(function() {
     var sku = $("#sku-search").val();
     if (!sku) {
-        alert('SKU Field cannot be blank!', 'danger');
+        bsalert('SKU Field cannot be blank!', 'danger');
         clear_sku_form();
         return;
     }
     $.get(`data/products/?sku=${sku}`, function(data) {
         if (!data.product) {
-            alert('No matching query!', 'info');
+            bsalert('No matching query!', 'info');
             clear_sku_form();
             return;
         }
@@ -79,10 +79,19 @@ $("#sku-search-button").click(function() {
 });
 
 
-$("#save-product").click(function() {
+$("#reset").click(function() {
+    $("#reset").html = 'Destroying...';
+    $.get(`data/delete/`, function(data) {
+        alert("You just deleted everything, refresh the page now :(")
+    });
+    $("#reset").html = 'Everything Destroyed!';
+    location.reload();
+});
+
+$("#reset").click(function() {
     var sku = $("#sku-search").val();
     if (!sku) {
-        alert('SKU Field cannot be blank!', 'danger');
+        bsalert('SKU Field cannot be blank!', 'danger');
         clear_sku_form();
         return;
     }
@@ -95,7 +104,7 @@ $("#save-product").click(function() {
             type: 'POST',
             url: '/data/products/',
             data: JSON.stringify(data),
-            success: function(data) { alert('Changes saved successfully!!', 'success'); },
+            success: function(data) { bsalert('Changes saved successfully!!', 'success'); },
             contentType: "application/json",
             dataType: 'json'
         });
@@ -104,4 +113,4 @@ $("#save-product").click(function() {
 
 $(document).ready(function() {
     $('#example').DataTable();
-} );
+});
