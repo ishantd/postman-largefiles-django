@@ -3,7 +3,7 @@ from django.forms import model_to_dict
 
 from rest_framework.views import APIView
 
-from data.models import Product, ProductAggregate
+from data.models import Product, ProductAggregate, DatabaseAction
 from data.utils import ProcessCSV, start_thread_process
 from braces.views import CsrfExemptMixin
 
@@ -36,3 +36,21 @@ class Products(CsrfExemptMixin, APIView):
         product = Product.objects.get(sku=product_sku)
         product.delete()
         return JsonResponse({"status": "ok"}, status=200)
+
+class DatabaseActions(CsrfExemptMixin, APIView):
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            db = DatabaseAction.objects.all().values()
+        except:
+            return JsonResponse({"status": "ok", "db_actions": False}, status=200)
+        return JsonResponse({"status": "ok", "db_actions": list(db)}, status=200)
+    
+    def post(self, request, *args, **kwargs):
+        db_id = request.data.get('db_id', False)
+        status = request.data.get('db_status', False)
+        
+        db = DatabaseAction.objects.get(id=db_id)
+        db.status = status
+        db.save()
+        return JsonResponse({"status": "ok", "db": model_to_dict(db)}, status=200)

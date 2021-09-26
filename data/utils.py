@@ -1,4 +1,4 @@
-from data.models import Product, ProductAggregate
+from data.models import DatabaseAction, Product, ProductAggregate
 from upload.models import FileItem
 from upload.utils import random_string_generator
 
@@ -60,6 +60,15 @@ class ProcessCSV:
         start_thread_process(self.aggregate_data_into_table)
         return True
         
+def start_db_action(name, status):
+    return DatabaseAction.objects.create(name=name, status=status)
+
+def modify_db_status(id, status):
+    db = DatabaseAction.objects.get(id=id)
+    db.status = status
+    db.save()
+    return db
+
 
 
 def start_csv_processing():
