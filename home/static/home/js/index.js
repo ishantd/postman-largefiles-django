@@ -23,8 +23,7 @@ function start_file_processing(data = {}) {
         crossDomain: true,
         dataType: "json",
         success: function(data, status, jqXHR) {
-
-            alert("success"); // write success in " "
+            alert("Upload Successful, you can browse anything you want while I process the file on a different Thread!!!"); // write success in " "
         },
 
         error: function(jqXHR, status) {
