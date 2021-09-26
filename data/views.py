@@ -5,7 +5,7 @@ from django.forms import model_to_dict
 from rest_framework.views import APIView
 
 from data.models import Product, ProductAggregate, DatabaseAction
-from data.utils import ProcessCSV, start_thread_process
+from data.utils import ProcessCSV, start_data_aggregation, start_thread_process
 from braces.views import CsrfExemptMixin
 
 class Products(CsrfExemptMixin, APIView):
@@ -25,8 +25,7 @@ class Products(CsrfExemptMixin, APIView):
         
         product = Product.objects.get(sku=product_sku)
         if not(product.name == name):
-            p = ProcessCSV()
-            start_thread_process(p.aggregate_data_into_table())
+            start_thread_process(start_data_aggregation)
         product.name = name
         product.description = description
         product.save()

@@ -108,3 +108,9 @@ def start_csv_processing():
     p.start_file_processing()
     print("HAHAHHA DONE!!!")
     return True
+
+def start_data_aggregation():
+    p = ProcessCSV()
+    p.aggregate_data_into_table()
+    print("HAHAHHA DONE!!!")
+    return True
