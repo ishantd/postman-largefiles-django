@@ -123,14 +123,25 @@
         <li>Total Product Count : {{product_count}}</li>
         <li>Total Aggregate Table Count : {{aggregate_table_count}}</li>
     </ul>
-    <h5 class="my-3">
-        Users with most products (Top 15):
-    </h5>
-    <ul class="list-group">
-        {% for user in aggregate_list %}
-            <li class="list-group-item">{{user.name}} - {{user.product_count}} </li>
-        {% endfor %}
-    </ul>
+    
+    {% if aggregate_list %}        
+        <h5 class="my-3">
+            Users with most products (Top 15):
+        </h5>
+        <ul class="list-group">
+            {% for user in aggregate_list %}
+                <li class="list-group-item">{{user.name}} - {{user.product_count}} </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+        
+    <hr>
+    <h6 class="mt-5">By <a target="_blank" href="mailto:ishantdahiya@gmail.com">Ishant Dahiya</a> for Postman Data Engineer Position
+    <br><br>
+        <a target="_blank" href="https://github.com/ishantd/">
+            <img height="32" width="32" src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/github.svg" />
+        </a>
+    </h6>
   </div>
 </div>
 
