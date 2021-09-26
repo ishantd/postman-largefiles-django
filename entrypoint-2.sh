@@ -9,5 +9,6 @@ then
 
   echo "psql started"
 fi
+
 python manage.py migrate
 exec "$@"
