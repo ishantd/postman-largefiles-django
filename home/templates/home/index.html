@@ -89,7 +89,6 @@
     <ul>
         <li>Total Product Count : {{product_count}}</li>
         <li>Total Aggregate Table Count : {{aggregate_table_count}}</li>
-        To check crlf to lf
     </ul>
     <h5 class="my-3">
         Users with most products (Top 15):
@@ -107,15 +106,30 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Search by SKU</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        ...
+      <div id="liveAlertPlaceholder"></div>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" name="product_sku" id="sku-search" placeholder="SKU">
+            <button class="btn btn-primary" type="button" id="sku-search-button">Search</button>
+        </div>
+        <form action="{% url 'data:products' %}" method="post">
+            <div class="mb-3">
+                <label for="product_name" class="form-label">Name</label>
+                <input type="text" class="form-control" id="product_name" name="product_name" placeholder="Name">
+            </div>
+            <div class="mb-3">
+                <label for="product_description" class="form-label">Description</label> <br/>
+                <textarea type="text" class="form-control"  id="product_description" placeholder="Description" name="product_description"></textarea>
+            </div>
+        </form>
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-primary" id="save-product">Save changes</button>
       </div>
     </div>
   </div>
