@@ -120,7 +120,7 @@
   </div>
   <div class="offcanvas-body">
     <ul>
-        <li>Total Product Count : {{product_count}}</li>
+        <li>Total Product Count : {{count}}</li>
         <li>Total Aggregate Table Count : {{aggregate_table_count}}</li>
     </ul>
     
@@ -130,7 +130,7 @@
         </h5>
         <ul class="list-group">
             {% for user in aggregate_list %}
-                <li class="list-group-item">{{user.name}} - {{user.product_count}} </li>
+                <li class="list-group-item">{{user.name}} - {{user.count}} </li>
             {% endfor %}
         </ul>
     {% endif %}

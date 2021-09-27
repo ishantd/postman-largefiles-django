@@ -5,6 +5,10 @@ import os
 import sys
 import uuid
 import findspark
+import getopt, sys
+ 
+
+
 findspark.add_packages('org.postgresql:postgresql:42.2.24')
 
 
@@ -45,3 +49,34 @@ class PySparkProcess:
         self.agg_df_pyspark = self.producuts_df.groupBy('name').count()
         self.agg_df_pyspark.write.jdbc(url=self.db_url, table="data_productaggregate", mode='overwrite', properties=self.db_properties)
 
+ 
+# Remove 1st argument from the
+# list of command line arguments
+argumentList = sys.argv[1:]
+ 
+# Options
+options = "pa:"
+ 
+# Long options
+long_options = ["process", "aggregate"]
+ 
+try:
+    # Parsing argument
+    arguments, values = getopt.getopt(argumentList, options, long_options)
+     
+    # checking each argument
+    for currentArgument, currentValue in arguments:
+ 
+        if currentArgument in ("-p", "--process"):
+            p = PySparkProcess()
+            p.read_csv()
+            p.write_products_to_db()
+            p.aggregate_and_write_products_to_db()
+             
+        elif currentArgument in ("-a", "--aggregate"):
+            p = PySparkProcess()
+            p.aggregate_and_write_products_to_db()
+             
+except getopt.error as err:
+    # output error, and return with an error code
+    print (str(err))

@@ -57,10 +57,10 @@ class ProcessCSV:
         start = timeit.default_timer()
         db_action = start_db_action("Aggregating Data in Products Table", "In Progress")
         fieldname = 'name'
-        product_count = list(Product.objects.all().values(fieldname).order_by(fieldname).annotate(product_count=Count(fieldname)))
-        product_count_objects = [ProductAggregate(name=p["name"], product_count=p["product_count"]) for p in product_count]
+        count = list(Product.objects.all().values(fieldname).order_by(fieldname).annotate(count=Count(fieldname)))
+        count_objects = [ProductAggregate(name=p["name"], count=p["count"]) for p in count]
         ProductAggregate.objects.all().delete()
-        new_product_aggregate = ProductAggregate.objects.bulk_create(objs=product_count_objects)
+        new_product_aggregate = ProductAggregate.objects.bulk_create(objs=count_objects)
         db_action = modify_db_status(db_action.id, "Completed")
         stop = timeit.default_timer()
         if start and stop:

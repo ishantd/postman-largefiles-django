@@ -49,7 +49,7 @@ This table has the details of all products imported from the **products.csv** fi
 			(
 				id uuid NOT NULL,
 			    name character varying(420),
-			    product_count integer,
+			    count integer,
 			    CONSTRAINT data_productaggregate_pkey PRIMARY KEY (id)
 			)
 ```
