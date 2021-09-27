@@ -34,19 +34,24 @@ class PySparkProcess:
         random_udf = udf(lambda: str(uuid.uuid4()), StringType()).asNondeterministic()
         self.df_pyspark = self.spark.read.csv('products.csv', header=True, inferSchema=True).na.drop('any').drop('sku')
         self.df_pyspark = self.df_pyspark.withColumn('sku', random_udf())
+        return self.df_pyspark
         
-    def write_products_to_db(self):
-        self.df_pyspark.write.jdbc(url=self.db_url, table="data_product", mode='append', properties=self.db_properties)
-     
-    def aggregate_and_write_products_to_db(self):
-        self.producuts_df = self.spark.read \
+        
+    def write_products_to_db(self, products_df):
+        if not products_df:
+            self.df_pyspark.write.jdbc(url=self.db_url, table="data_product", mode='append', properties=self.db_properties)
+        else:
+            products_df.write.jdbc(url=self.db_url, table="data_product", mode='append', properties=self.db_properties)
+            
+    def aggregate_and_write_products_to_db(self, products_df):
+        products_df = self.spark.read \
         .format("jdbc") \
         .option("url", self.db_url) \
         .option("dbtable", 'data_product') \
         .option("user", "postgres") \
         .option("password", "ACXIWFNY4i688J0HfyPo") \
         .load()
-        self.agg_df_pyspark = self.producuts_df.groupBy('name').count()
+        self.agg_df_pyspark = products_df.groupBy('name').count()
         self.agg_df_pyspark.write.jdbc(url=self.db_url, table="data_productaggregate", mode='overwrite', properties=self.db_properties)
 
  
@@ -69,13 +74,13 @@ try:
  
         if currentArgument in ("-p", "--process"):
             p = PySparkProcess()
-            p.read_csv()
-            p.write_products_to_db()
-            p.aggregate_and_write_products_to_db()
+            products_df = p.read_csv()
+            p.write_products_to_db(products_df)
+            p.aggregate_and_write_products_to_db(products_df)
              
         elif currentArgument in ("-a", "--aggregate"):
             p = PySparkProcess()
-            p.aggregate_and_write_products_to_db()
+            p.aggregate_and_write_products_to_db(False)
              
 except getopt.error as err:
     # output error, and return with an error code
