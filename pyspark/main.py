@@ -9,7 +9,8 @@ import findspark
 import getopt, sys
  
 try:
-    with open(os.path.join('config.json')) as f:
+    print(os.getcwd(), "*******************")
+    with open('config.json') as f:
         configs = json.loads(f.read())
 except:
     configs = None
@@ -47,9 +48,9 @@ class PySparkProcess:
         os.environ['PYSPARK_SUBMIT_ARGS'] = '--driver-class-path /opt/application/postgresql-42.2.24.jar --jars /opt/application/postgresql-42.2.24.jar pyspark-shell'
 
         self.db_properties={}
-        self.db_url = f'jdbc:postgresql://pm-test.cutudajvwdwp.ap-south-1.rds.amazonaws.com:5432/postgres?user=postgres&password=ACXIWFNY4i688J0HfyPo'
-        self.db_properties['username'] = "postgres"
-        self.db_properties['password'] = "ACXIWFNY4i688J0HfyPo"
+        self.db_url = f'jdbc:postgresql://{DB_CONFIG["HOST"]}:{DB_CONFIG["PORT"]}/{DB_CONFIG["NAME"]}?user={DB_CONFIG["USER"]}&password={DB_CONFIG["PASSWORD"]}'
+        self.db_properties['username'] = DB_CONFIG["USER"]
+        self.db_properties['password'] = DB_CONFIG["PASSWORD"]
         self.db_properties['url'] = self.db_url
         self.db_properties['driver'] = 'org.postgresql.Driver'
 
@@ -71,8 +72,8 @@ class PySparkProcess:
         .format("jdbc") \
         .option("url", self.db_url) \
         .option("dbtable", 'data_product') \
-        .option("user", "postgres") \
-        .option("password", "ACXIWFNY4i688J0HfyPo") \
+        .option("user", DB_CONFIG["USER"]) \
+        .option("password", DB_CONFIG["PASSWORD"]) \
         .load()
         self.agg_df_pyspark = products_df.groupBy('name').count()
         self.agg_df_pyspark.write.jdbc(url=self.db_url, table="data_productaggregate", mode='overwrite', properties=self.db_properties)

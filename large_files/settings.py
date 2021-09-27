@@ -47,7 +47,7 @@ DB_CONFIG = get_env_var("DB")
 
 SECRET_KEY = 'django-insecure-l68rx%$%scdm&uy^4k6#6v7j9h6-cnxbtw1fb^ak2f*=!i91t_'
 
-DEBUG = True
+DEBUG = not(bool('main' in os.getcwd()))
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "postman.ishantdahiya.com"]
 

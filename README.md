@@ -6,8 +6,10 @@ Aim was to build a system which is able to handle **long running processes** in 
 
  - Django (Python Framework) - Used to create REST APIs to upload/ingest files into the DB.
  - PostgreSQL (Database)
- - Pandas and SQLAlchemy - Used to read csv files and sql commands to insert them and perform operations on the data.
+ - Pandas and PySpark - Used to read csv files and sql commands to insert them and perform operations on the data.
  - Redis (Cache Backend) - Used to display list of products and aggregate count on the dashboard screen.
+
+For more details on the use of PySpark please refer to: [pyspark/README.md](pyspark/README.md)
 
 ## Steps to Run the Code
 
@@ -17,9 +19,19 @@ This is dockerized project, and can be run by using [Docker](https://www.docker.
 
 `docker-compose run hello-world`
 
-2. Build the containers and processes required to start Docker (NOTE: This command should be used only once, when retrying to build the docker image/container please use `docker-compose up --build`)<br/>
+2. Build the Django REST API Framework to monitor and look at data stats (NOTE: This command should be used only once, when retrying to build the docker image/container please use `docker-compose up --build`)<br/>
 
 `docker-compose up`
+
+3. Move to the pyspark directory `cd pyspark` to build the Docker Image to ingest and aggregate data in products.csv file <br/>
+
+`docker build -t {image_name} .`
+
+4. Execute queries on the built docker image to ingest and perform operations on data.
+
+`docker run {image_name} spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py -p`
+
+5. View the results after the query is successful on [Localhost](http://127.0.0.1:8000/)
 
 ### Known Issues in Docker Build Process
 
@@ -59,16 +71,19 @@ This table has the aggregate of number of products per name (customer).
 
  - [x] Your code should follow concept of **OOPS**
 		 Implementation of OOPS Based Problem Solving in this can be found in the following files for this particular project
+#### [pyspark/main.py](pyspark/main.py)
+This script uses the PySpark API built on top of Apache's Spark Framework to ingest and process the data.
 
 #### [data/utils.py](data/utils.py)
-This file has a `ProcessCSV` class that handles all aspects of processing the CSV file on **multiple threads**.
+This file has a `ProcessCSV` class that handles all aspects of processing the CSV file using the REST API triggers for **dedicated PySpark Docker Cluster**.
+
 
 #### [data/views.py](data/views.py)
 This file has a multiple classes extending the Base `APIView` Class from Django's inbuilt functions. These are used to create **REST API Endpoints** to handle various **CRUD** operations and also to trigger file processes.
 
  - [x] Support for regular non-blocking parallel ingestion of the given file into a table. Consider thinking about the scale of what should happen if the file is to be processed in 2 mins.
 
-Although a with a monolith style architecture this program utilises Python's **Multhi-Threading** capabilities to run tasks parallely thus allowing the user to upload and then process the files on an **Independent Non Blocking Thread**
+Although with a microservice-like style architecture this program utilises Apache's greate **Spark Framework** to run ingest data parallely and in cluster modules thus allowing the user to upload and then process the files **Independent of other processes**
 
 The [LIVE DEMO](https://postman.ishantdahiya.com/) of this project is hosted on **AWS Free Tier** hardware i.e. **1GB RAM, 1vCPU EC2 Machine and 1GB RAM, 1vCPU RDS PostgreSQL Database**
 
@@ -87,7 +102,7 @@ Following is the screenshot of some test runs: [Note: The upload time is actuall
 I think I have completed all the points given but they can be definetely improved and optimised upon.
 ## Future Improvements
 
- - Create a **Microservices** architecture to **improve performance** and for **easy and fast scalibility**
+ - Create a **Microservices** architecture utilising Flask or other lightweight frameworks to **improve performance** and for **easy and fast scalibility**
  - Experiment with **Cache and DB Hardware Configuration** to ensure **maximum performance** of specialised tasks such as aggregation and other types of anlalytical operations.
  - Write **Unit Tests**  to ensure **reliability**
  - Research and Use specialised languages  and frameworks for these specific tasks.

@@ -10,6 +10,7 @@ COPY requirements.txt .
 RUN apt-get update
 RUN apt-get install libpq-dev gcc -y
 COPY products.csv .
+COPY config.json .
 RUN pip3 install --upgrade pip
 RUN pip3 install --no-cache-dir Cython
 RUN pip3 install wheel && pip3 install -r requirements.txt

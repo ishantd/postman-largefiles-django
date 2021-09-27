@@ -24,11 +24,12 @@ class Products(CsrfExemptMixin, APIView):
         description = request.data.get('product_description', False)
         
         product = Product.objects.get(sku=product_sku)
-        if not(product.name == name):
-            start_thread_process(start_data_aggregation)
+        old_product_name = product.name
         product.name = name
         product.description = description
         product.save()
+        if not(product.name == old_product_name):
+            start_thread_process(start_data_aggregation)
         return JsonResponse({"status": "ok", "product": model_to_dict(product)}, status=200)
     
     def delete(self, request, *args, **kwargs):

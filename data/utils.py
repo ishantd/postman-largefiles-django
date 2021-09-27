@@ -10,8 +10,14 @@ from sqlalchemy import create_engine
 from tqdm import tqdm
 import pandas as pd
 import threading
+import os
 
 import timeit
+
+db = ''
+
+if not settings.DEBUG:
+    db = '-x'
 
 def start_thread_process(target):
     t = threading.Thread(target=target)             
@@ -100,13 +106,11 @@ def time_this_function(start, stop, id):
     return True
 
 def start_csv_processing():
-    p = ProcessCSV()
-    p.start_file_processing()
-    print("HAHAHHA DONE!!!")
-    return True
+    stream = os.popen(f'cd pyspark && docker run pystest spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py {db} -p')
+    output = stream.read()
+    return output
 
 def start_data_aggregation():
-    p = ProcessCSV()
-    p.aggregate_data_into_table()
-    print("HAHAHHA DONE!!!")
+    stream = os.popen(f'cd pyspark && docker run pystest spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py {db} -a')
+    output = stream.read()
     return True
