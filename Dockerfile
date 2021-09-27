@@ -1,5 +1,5 @@
 # pull official base image
-FROM python:3.8-slim
+FROM ubuntu:latest
 
 # set work directory
 RUN mkdir /code
@@ -23,8 +23,10 @@ ENV PYTHONUNBUFFERED 1
 #     && apk add postgresql-dev gcc python3-dev musl-dev
 
 RUN apt-get update \
-    && apt-get -y install libpq-dev gcc \
+    && apt-get -y install libpq-dev python3-pip python3-dev python3-venv gcc \
     && pip install psycopg2
+
+RUN apt install default-jre
 
 # install dependencies
 RUN pip install --upgrade pip
