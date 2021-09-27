@@ -44,17 +44,6 @@ class ProcessCSV:
         for i in df.index:
             df.at[i, "sku"] = f'{df.at[i, "sku"]}-{random_string_generator(8)}'
         df.to_sql('data_product', if_exists='append',index=False,con=self.conn_default)
-        # products = []
-        # for row in tqdm(df.itertuples()):
-        #     products.append(
-        #         Product(
-        #             name=row[1],
-        #             sku=f'{row[2]}-{random_string_generator(8)}',
-        #             description=row[3]
-        #         )
-        #     )
-        # products = Product.objects.bulk_create(objs=products)
-        
         file.processed = True
         file.save()
         db_action = modify_db_status(db_action.id, "Completed")
