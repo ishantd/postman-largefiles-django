@@ -87,26 +87,35 @@ options = "pa:"
  
 # Long options
 long_options = ["process", "aggregate"]
+
+print(argumentList, "^^^^^^^^^^^^^^^^^^^^^^^^")
  
 try:
     # Parsing argument
-    arguments, values = getopt.getopt(argumentList, options, long_options)
      
     # checking each argument
-    for currentArgument, currentValue in arguments:
+    for argument in argumentList:
  
-        if currentArgument in ("-p", "--process"):
+        if argument in ("-l", "--localdb"):
+            DB_CONFIG = DB_CONFIG["LOCAL"]
+        
+        if argument in ("-x", "--xdb"):
+            DB_CONFIG = DB_CONFIG["PROD"]
+        
+        elif argument in ("-i", "--interactive"):
+            db_type = input("Please choose from local or rds db. \n To make your your choice just enter R for RDS and L for Local \n Note: The RDS database can be monitored using the Django Project.")
+            if db_type == 'L' or db_type == 'l':
+                DB_CONFIG = DB_CONFIG["LOCAL"]
+                
+        elif argument in ("-p", "--process"):
             p = PySparkProcess()
             products_df = p.read_csv()
             p.write_products_to_db(products_df)
             p.aggregate_and_write_products_to_db(products_df)
-             
-        elif currentArgument in ("-a", "--aggregate"):
+            
+        elif argument in ("-a", "--aggregate"):
             p = PySparkProcess()
             p.aggregate_and_write_products_to_db(False)
-        
-        elif currentArgument in ("-l", "-localdb"):
-            DB_CONFIG = DB_CONFIG["LOCAL"]            
              
 except getopt.error as err:
     # output error, and return with an error code
