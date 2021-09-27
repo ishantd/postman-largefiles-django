@@ -4,10 +4,33 @@ from pyspark.sql.types import StringType
 import os
 import sys
 import uuid
+import json
 import findspark
 import getopt, sys
  
+try:
+    with open(os.path.join('config.json')) as f:
+        configs = json.loads(f.read())
+except:
+    configs = None
+    print("Couldn't Find config file")
 
+def get_env_var(setting, configs=configs):
+ try:
+     val = configs[setting]
+     if val == 'True':
+         val = True
+     elif val == 'False':
+         val = False
+     return val
+ except KeyError:
+     error_msg = "ImproperlyConfigured: Set {0} environment variable".format(setting)
+     print(error_msg)
+ except Exception as e:
+     print ("some unexpected error occurred!", e)
+
+DB_CONFIG = get_env_var("DB")
+DB_CONFIG = DB_CONFIG["RDS"]
 
 findspark.add_packages('org.postgresql:postgresql:42.2.24')
 
@@ -81,6 +104,9 @@ try:
         elif currentArgument in ("-a", "--aggregate"):
             p = PySparkProcess()
             p.aggregate_and_write_products_to_db(False)
+        
+        elif currentArgument in ("-l", "-localdb"):
+            DB_CONFIG = DB_CONFIG["LOCAL"]            
              
 except getopt.error as err:
     # output error, and return with an error code
