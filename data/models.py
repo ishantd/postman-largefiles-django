@@ -9,7 +9,7 @@ class Product(models.Model):
 class ProductAggregate(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=420, null=True, blank=True)
-    product_count = models.IntegerField(default=0)
+    count = models.IntegerField(default=0)
     
 class DatabaseAction(models.Model):
     name = models.CharField(max_length=420, null=True, blank=True)
