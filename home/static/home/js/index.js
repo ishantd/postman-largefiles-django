@@ -87,6 +87,13 @@ $("#reset").click(function() {
     location.reload();
 });
 
+$("#ingest").click(function() {
+    $.get(`data/products/?ingest=true`, function(data) {
+        alert("The program has now started processing the Products.csv file you can see the status of the same in the table given.")
+    });
+    location.reload();
+});
+
 $("#save-product").click(function() {
     var sku = $("#sku-search").val();
     if (!sku) {

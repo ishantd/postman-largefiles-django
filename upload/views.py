@@ -17,9 +17,6 @@ class Files(CsrfExemptMixin, APIView):
         return JsonResponse({"status": "ok", "files": files}, status=200)
     
     def post(self, request, *args, **kwargs):
-        start, stop = None, None
-        db_action = start_db_action("Product File Upload", "In Progress")
-        start = timeit.default_timer()
         files = request.FILES.getlist('files[]')
         for file in files:
             if the_file_is_csv(file.name):
@@ -32,9 +29,6 @@ class Files(CsrfExemptMixin, APIView):
                     f.uploaded = True
                     f.save()
                     db_action = modify_db_status(db_action.id, "Completed")
-                stop = timeit.default_timer()
-        if start and stop:
-            time_this_function(start, stop, db_action.id)
         return JsonResponse({"status": "ok"}, status=200)
     
     def put(self, request, *args, **kwargs):

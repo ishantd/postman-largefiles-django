@@ -5,13 +5,16 @@ from django.forms import model_to_dict
 from rest_framework.views import APIView
 
 from data.models import Product, ProductAggregate, DatabaseAction
-from data.utils import ProcessCSV, start_data_aggregation, start_thread_process
+from data.utils import ProcessCSV, start_data_aggregation, start_thread_process, start_csv_processing
 from braces.views import CsrfExemptMixin
 
 class Products(CsrfExemptMixin, APIView):
         
     def get(self, request, *args, **kwargs):
         query = request.query_params.get('sku', False)
+        ingest_query = request.query_params.get('ingest', False)
+        if ingest_query:
+            start_thread_process(start_csv_processing)
         try:
             product = Product.objects.get(sku=query)
         except:

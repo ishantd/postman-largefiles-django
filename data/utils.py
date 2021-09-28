@@ -35,7 +35,7 @@ class ProcessCSV:
     def create_pandas_object(self, file):
         start, stop = None, None
         start = timeit.default_timer()
-        db_action = start_db_action("Read CSV into Pandas", "In Progress")
+        db_action = start_db_action("Read CSV into PySpark", "In Progress")
         df = pd.read_csv(file.file.path)
         db_action = modify_db_status(db_action.id, "Completed")
         stop = timeit.default_timer()
@@ -46,7 +46,7 @@ class ProcessCSV:
     def save_df_into_db(self, df, file):
         start, stop = None, None
         start = timeit.default_timer()
-        db_action = start_db_action("Saving Pandas Dataframe in PostgreSQL DB", "In Progress")
+        db_action = start_db_action("Saving PySpark Dataframe in PostgreSQL DB", "In Progress")
         for i in df.index:
             df.at[i, "sku"] = f'{df.at[i, "sku"]}-{random_string_generator(8)}'
         df.to_sql('data_product', if_exists='append',index=False,con=self.conn_default)
@@ -106,11 +106,24 @@ def time_this_function(start, stop, id):
     return True
 
 def start_csv_processing():
+    start, stop = None, None
+    start = timeit.default_timer()
+    db_action = start_db_action("CSV -> PySpark[Ingestion&Aggregation] -> DB", "In Progress")
     stream = os.popen(f'cd pyspark && docker run pystest spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py {db} -p')
     output = stream.read()
+    stop = timeit.default_timer()
+    if start and stop:
+        time_this_function(start, stop, db_action.id)
     return output
 
 def start_data_aggregation():
+    start, stop = None, None
+    start = timeit.default_timer()
+    db_action = start_db_action("Aggregating Data in Products Table", "In Progress")
     stream = os.popen(f'cd pyspark && docker run pystest spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py {db} -a')
     output = stream.read()
-    return True
+    db_action = modify_db_status(db_action.id, "Completed")
+    stop = timeit.default_timer()
+    if start and stop:
+        time_this_function(start, stop, db_action.id)
+    return output
