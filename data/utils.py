@@ -127,3 +127,16 @@ def start_data_aggregation():
     if start and stop:
         time_this_function(start, stop, db_action.id)
     return output
+
+def start_pandas_data_aggregation():
+    start, stop = None, None
+    start = timeit.default_timer()
+    db_action = start_db_action("Aggregating Data in Products Table[Pandas]", "In Progress")
+    p = ProcessCSV()
+    p.aggregate_data_into_table()
+    print("STARTING PANDAS DF")
+    db_action = modify_db_status(db_action.id, "Completed")
+    stop = timeit.default_timer()
+    if start and stop:
+        time_this_function(start, stop, db_action.id)
+    return db_action

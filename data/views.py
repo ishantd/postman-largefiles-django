@@ -1,11 +1,12 @@
 from upload.models import FileItem
 from django.http import JsonResponse
 from django.forms import model_to_dict
+from django.conf import settings
 
 from rest_framework.views import APIView
 
 from data.models import Product, ProductAggregate, DatabaseAction
-from data.utils import ProcessCSV, start_data_aggregation, start_thread_process, start_csv_processing
+from data.utils import ProcessCSV, start_data_aggregation, start_pandas_data_aggregation, start_thread_process, start_csv_processing
 from braces.views import CsrfExemptMixin
 
 class Products(CsrfExemptMixin, APIView):
@@ -32,7 +33,11 @@ class Products(CsrfExemptMixin, APIView):
         product.description = description
         product.save()
         if not(product.name == old_product_name):
-            start_thread_process(start_data_aggregation)
+            if not settings.DEBUG:
+                start_thread_process(start_data_aggregation)
+            else:
+                start_thread_process(start_pandas_data_aggregation)
+                
         return JsonResponse({"status": "ok", "product": model_to_dict(product)}, status=200)
     
     def delete(self, request, *args, **kwargs):
