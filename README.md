@@ -21,11 +21,12 @@ This is dockerized project, and can be run by using [Docker](https://www.docker.
 
 2. Build the Django REST API Framework to monitor and look at data stats (NOTE: This command should be used only once, when retrying to build the docker image/container please use `docker-compose up --build`)<br/>
 
-`docker-compose up`
+`docker-compose up` <br/> **Approx. build time: 7 Minutes**
 
 3. Move to the pyspark directory `cd pyspark` to build the Docker Image to ingest and aggregate data in products.csv file <br/>
 
-`docker build -t pystest .`
+`docker build -t pystest .` <br/> **Approx. build time: 7 Minutes**
+
 
 4. Execute queries on the built docker image to ingest and perform operations on data.
 
@@ -106,6 +107,7 @@ I think I have completed all the points given but they can be definetely improve
  - Experiment with **Cache and DB Hardware Configuration** to ensure **maximum performance** of specialised tasks such as aggregation and other types of anlalytical operations.
  - Write **Unit Tests**  to ensure **reliability**
  - Research and Use specialised languages  and frameworks for these specific tasks.
+ - Make Docker build times faster by using more specialized and optimized images for each specific task.
 
 
 ## Architecture Diagram
