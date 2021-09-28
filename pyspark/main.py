@@ -9,7 +9,6 @@ import findspark
 import getopt, sys
  
 try:
-    print(os.getcwd(), "*******************")
     with open('config.json') as f:
         configs = json.loads(f.read())
 except:
@@ -88,8 +87,6 @@ options = "pa:"
  
 # Long options
 long_options = ["process", "aggregate"]
-
-print(argumentList, "^^^^^^^^^^^^^^^^^^^^^^^^")
  
 try:
     # Parsing argument

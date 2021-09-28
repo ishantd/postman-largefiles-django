@@ -1,10 +1,28 @@
-{
-    "DB": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "PASSWORD": "ACXIWFNY4i688J0HfyPo",
-        "HOST": "pm-test.cutudajvwdwp.ap-south-1.rds.amazonaws.com",
-        "PORT": "5432"
-    }
-}
+ {
+     "DB": {
+         "LOCAL": {
+             "ENGINE": "django.db.backends.postgresql",
+             "NAME": "py_dev",
+             "USER": "postgres",
+             "PASSWORD": "postgres",
+             "HOST": "db",
+             "PORT": "5432"
+         },
+         "RDS": {
+             "ENGINE": "django.db.backends.postgresql",
+             "NAME": "postgres",
+             "USER": "postgres",
+             "PASSWORD": "ACXIWFNY4i688J0HfyPo",
+             "HOST": "pm-test.cutudajvwdwp.ap-south-1.rds.amazonaws.com",
+             "PORT": "5432"
+         },
+         "PROD": {
+             "ENGINE": "django.db.backends.postgresql",
+             "NAME": "postgres",
+             "USER": "postgres",
+             "PASSWORD": "Bn4kQxOGRX5GCbBFTL61",
+             "HOST": "pm-prod.cutudajvwdwp.ap-south-1.rds.amazonaws.com",
+             "PORT": "5432"
+         }
+     }
+ }

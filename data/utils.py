@@ -81,7 +81,6 @@ class ProcessCSV:
     
     def start_file_processing(self):
         [self.process_all_files(f.id) for f in self.files]
-        print("STARTING AGGREGATING DATA")
         start_thread_process(self.aggregate_data_into_table)
         return True
         
@@ -111,6 +110,7 @@ def start_csv_processing():
     db_action = start_db_action("CSV -> PySpark[Ingestion&Aggregation] -> DB", "In Progress")
     stream = os.popen(f'cd pyspark && docker run pystest spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py {db} -p')
     output = stream.read()
+    db_action = modify_db_status(db_action.id, "Completed")
     stop = timeit.default_timer()
     if start and stop:
         time_this_function(start, stop, db_action.id)

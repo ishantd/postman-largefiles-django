@@ -49,6 +49,8 @@ SECRET_KEY = 'django-insecure-l68rx%$%scdm&uy^4k6#6v7j9h6-cnxbtw1fb^ak2f*=!i91t_
 
 DEBUG = not(bool('main' in os.getcwd()))
 
+DB_CONFIG = DB_CONFIG["RDS"] if DEBUG else DB_CONFIG["PROD"]
+
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "postman.ishantdahiya.com"]
 
 
@@ -113,7 +115,6 @@ DATABASES = {
 }
 
 DB_URI_DEFAULT = f'postgresql://{os.environ.get("SQL_USER", DB_CONFIG["USER"])}:{os.environ.get("SQL_PASSWORD", DB_CONFIG["PASSWORD"])}@{os.environ.get("SQL_HOST", DB_CONFIG["HOST"])}:{os.environ.get("SQL_PORT", DB_CONFIG["PORT"])}/{os.environ.get("SQL_DATABASE", DB_CONFIG["NAME"])}'
-print(DB_URI_DEFAULT)
 
 CACHES = {
     "default": {
