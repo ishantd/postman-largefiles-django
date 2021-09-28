@@ -7,7 +7,9 @@ import uuid
 import json
 import findspark
 import getopt, sys
- 
+
+print(os.getcwd())
+
 try:
     with open('config.json') as f:
         configs = json.loads(f.read())
@@ -29,8 +31,8 @@ def get_env_var(setting, configs=configs):
  except Exception as e:
      print ("some unexpected error occurred!", e)
 
-DB_CONFIG = get_env_var("DB")
-DB_CONFIG = DB_CONFIG["RDS"]
+DB = get_env_var("DB")
+DB_CONFIG = DB["RDS"]
 
 findspark.add_packages('org.postgresql:postgresql:42.2.24')
 
@@ -95,15 +97,15 @@ try:
     for argument in argumentList:
  
         if argument in ("-l", "--localdb"):
-            DB_CONFIG = DB_CONFIG["LOCAL"]
+            DB_CONFIG = DB["LOCAL"]
         
         if argument in ("-x", "--xdb"):
-            DB_CONFIG = DB_CONFIG["PROD"]
+            DB_CONFIG = DB["PROD"]
         
         elif argument in ("-i", "--interactive"):
             db_type = input("Please choose from local or rds db. \n To make your your choice just enter R for RDS and L for Local \n Note: The RDS database can be monitored using the Django Project.")
             if db_type == 'L' or db_type == 'l':
-                DB_CONFIG = DB_CONFIG["LOCAL"]
+                DB_CONFIG = DB["LOCAL"]
                 
         elif argument in ("-p", "--process"):
             p = PySparkProcess()

@@ -25,11 +25,11 @@ This is dockerized project, and can be run by using [Docker](https://www.docker.
 
 3. Move to the pyspark directory `cd pyspark` to build the Docker Image to ingest and aggregate data in products.csv file <br/>
 
-`docker build -t {image_name} .`
+`docker build -t pystest .`
 
 4. Execute queries on the built docker image to ingest and perform operations on data.
 
-`docker run {image_name} spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py -p`
+`docker run pystest spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py -p`
 
 5. View the results after the query is successful on [Localhost](http://127.0.0.1:8000/)
 
