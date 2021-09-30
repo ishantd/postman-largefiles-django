@@ -22,3 +22,6 @@ def index(request):
         'in_prod': not(prod)
     }
     return render(request, 'home/index.html', context)
+
+def readme(request):
+    return render(request, 'home/readme.html')

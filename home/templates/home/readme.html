@@ -1,0 +1,114 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% block content %}
+<div class="container">
+<h1 class="code-line" data-line-start=0 data-line-end=1><a id="Large_file_processor_0"></a><strong>Large file processor</strong></h1>
+<p class="has-line-data" data-line-start="2" data-line-end="3"><a href="https://postman.ishantdahiya.com/">LIVE DEMO</a></p>
+<p class="has-line-data" data-line-start="4" data-line-end="5">Aim was to build a system which is able to handle <strong>long running processes</strong> in a <strong>distributed fashion.</strong> I think I have managed to do so using the following tech stack. The program is in a Monolith Architecture.</p>
+<ul>
+<li class="has-line-data" data-line-start="6" data-line-end="7">Django (Python Framework) - Used to create REST APIs to upload/ingest files into the DB.</li>
+<li class="has-line-data" data-line-start="7" data-line-end="8">PostgreSQL (Database)</li>
+<li class="has-line-data" data-line-start="8" data-line-end="9">Pandas and PySpark - Used to read csv files and sql commands to insert them and perform operations on the data.</li>
+<li class="has-line-data" data-line-start="9" data-line-end="11">Redis (Cache Backend) - Used to display list of products and aggregate count on the dashboard screen.</li>
+</ul>
+<p class="has-line-data" data-line-start="11" data-line-end="12">For more details on the use of PySpark please refer to: <a href="pyspark/README.md">pyspark/README.md</a></p>
+<h2 class="code-line" data-line-start=13 data-line-end=14><a id="Steps_to_Run_the_Code_13"></a>Steps to Run the Code</h2>
+<p class="has-line-data" data-line-start="15" data-line-end="16">This is dockerized project, and can be run by using <a href="https://www.docker.com/">Docker</a> and Docker Compose</p>
+<ol>
+<li class="has-line-data" data-line-start="17" data-line-end="19">Verify that your docker service is running and configured &lt;br/&gt;</li>
+</ol>
+<p class="has-line-data" data-line-start="19" data-line-end="20"><code>docker-compose run hello-world</code></p>
+<ol start="2">
+<li class="has-line-data" data-line-start="21" data-line-end="23">Build the Django REST API Framework to monitor and look at data stats (NOTE: This command should be used only once, when retrying to build the docker image/container please use <code>docker-compose up --build</code>)&lt;br/&gt;</li>
+</ol>
+<p class="has-line-data" data-line-start="23" data-line-end="24"><code>docker-compose up</code> &lt;br/&gt; <strong>Approx. build time: 7 Minutes</strong></p>
+<ol start="3">
+<li class="has-line-data" data-line-start="25" data-line-end="27">Move to the pyspark directory <code>cd pyspark</code> to build the Docker Image to ingest and aggregate data in products.csv file &lt;br/&gt;</li>
+</ol>
+<p class="has-line-data" data-line-start="27" data-line-end="28"><code>docker build -t pystest .</code> &lt;br/&gt; <strong>Approx. build time: 7 Minutes</strong></p>
+<ol start="4">
+<li class="has-line-data" data-line-start="30" data-line-end="32">Execute queries on the built docker image to ingest and perform operations on data.</li>
+</ol>
+<p class="has-line-data" data-line-start="32" data-line-end="33"><code>docker run pystest spark-submit --driver-class-path /opt/application/postgresql-42.2.24.jar main.py -p</code></p>
+<ol start="5">
+<li class="has-line-data" data-line-start="34" data-line-end="36">View the results after the query is successful on <a href="http://127.0.0.1:8000/">Localhost</a></li>
+</ol>
+<h3 class="code-line" data-line-start=36 data-line-end=37><a id="Known_Issues_in_Docker_Build_Process_36"></a>Known Issues in Docker Build Process</h3>
+<p class="has-line-data" data-line-start="38" data-line-end="39">I found an issue while building the docker files in a <strong>Windows</strong> Environment. It was due the <strong>.sh</strong> files[namely: <a href="https://entrypoint.sh">entrypoint.sh</a> and <a href="http://entrypoint-2.sh">entrypoint-2.sh</a>] being in CRLF Format which is not supported in Docker <strong>Linux</strong> Environments. A quick fix around this would be:</p>
+<ol>
+<li class="has-line-data" data-line-start="39" data-line-end="40">Open the file in <a href="https://notepad-plus-plus.org/downloads/">Notepad++</a></li>
+<li class="has-line-data" data-line-start="40" data-line-end="42">go to View -&gt; Show Symbol -&gt;uncheck Show All Characters</li>
+</ol>
+<h2 class="code-line" data-line-start=42 data-line-end=43><a id="Schema_Details_42"></a>Schema Details</h2>
+<p class="has-line-data" data-line-start="44" data-line-end="45">Since I’m using Django there are multiple tables that facilitate many inbuilt functionalities of Django as a web framework, although the only Tables that are being used in this project are:</p>
+<ol>
+<li class="has-line-data" data-line-start="46" data-line-end="57">Products <code>data_product</code><pre><code class="has-line-data" data-line-start="48" data-line-end="57">CREATE TABLE data_product
+(
+    name character varying(420),
+    sku character varying(120) NOT NULL,
+    description text,
+    CONSTRAINT data_product_pkey PRIMARY KEY (sku)
+)
+
+</code></pre>
+</li>
+</ol>
+<p class="has-line-data" data-line-start="57" data-line-end="58">This table has the details of all products imported from the <strong>products.csv</strong> file.</p>
+<ol start="2">
+<li class="has-line-data" data-line-start="58" data-line-end="59">ProductAggregate <code>data_productaggregate</code></li>
+</ol>
+<pre><code class="has-line-data" data-line-start="60" data-line-end="68">            CREATE TABLE data_productaggregate
+(
+    id uuid NOT NULL,
+    name character varying(420),
+    count integer,
+    CONSTRAINT data_productaggregate_pkey PRIMARY KEY (id)
+)
+</code></pre>
+<p class="has-line-data" data-line-start="68" data-line-end="69">This table has the aggregate of number of products per name (customer).</p>
+<h2 class="code-line" data-line-start=70 data-line-end=71><a id="Point_to_Achive_Done_70"></a>Point to Achive [Done]</h2>
+<ul>
+<li class="has-line-data" data-line-start="72" data-line-end="74"><input type="checkbox" id="checkbox150" checked="true"><label for="checkbox150">Your code should follow concept of </label><strong>OOPS</strong><br>
+Implementation of OOPS Based Problem Solving in this can be found in the following files for this particular project</li>
+</ul>
+<h4 class="code-line" data-line-start=74 data-line-end=75><a id="pysparkmainpypysparkmainpy_74"></a><a href="pyspark/main.py">pyspark/main.py</a></h4>
+<p class="has-line-data" data-line-start="75" data-line-end="76">This script uses the PySpark API built on top of Apache’s Spark Framework to ingest and process the data.</p>
+<h4 class="code-line" data-line-start=77 data-line-end=78><a id="datautilspydatautilspy_77"></a><a href="data/utils.py">data/utils.py</a></h4>
+<p class="has-line-data" data-line-start="78" data-line-end="79">This file has a <code>ProcessCSV</code> class that handles all aspects of processing the CSV file using the REST API triggers for <strong>dedicated PySpark Docker Cluster</strong>.</p>
+<h4 class="code-line" data-line-start=81 data-line-end=82><a id="dataviewspydataviewspy_81"></a><a href="data/views.py">data/views.py</a></h4>
+<p class="has-line-data" data-line-start="82" data-line-end="83">This file has a multiple classes extending the Base <code>APIView</code> Class from Django’s inbuilt functions. These are used to create <strong>REST API Endpoints</strong> to handle various <strong>CRUD</strong> operations and also to trigger file processes.</p>
+<ul>
+<li class="has-line-data" data-line-start="84" data-line-end="86"><input type="checkbox" id="checkbox151" checked="true"><label for="checkbox151">Support for regular non-blocking parallel ingestion of the given file into a table. Consider thinking about the scale of what should happen if the file is to be processed in 2 mins.</label></li>
+</ul>
+<p class="has-line-data" data-line-start="86" data-line-end="87">Although with a microservice-like style architecture this program utilises Apache’s greate <strong>Spark Framework</strong> to run ingest data parallely and in cluster modules thus allowing the user to upload and then process the files <strong>Independent of other processes</strong></p>
+<p class="has-line-data" data-line-start="88" data-line-end="89">The <a href="https://postman.ishantdahiya.com/">LIVE DEMO</a> of this project is hosted on <strong>AWS Free Tier</strong> hardware i.e. <strong>1GB RAM, 1vCPU EC2 Machine and 1GB RAM, 1vCPU RDS PostgreSQL Database</strong></p>
+<p class="has-line-data" data-line-start="90" data-line-end="91">Following is the screenshot of some test runs: [Note: The upload time is actually the time taken to save the file into S3 and not the time taken for the user to upload on the internet to EC2 Machine] These can be taken with a grain of salt but are mostly accurate. I’m using the Python <strong>timeit</strong> library to record times and save them in a separate table.</p>
+<p class="has-line-data" data-line-start="92" data-line-end="93"><img src="postman_stats.png?raw=true" alt="Image"></p>
+<ul>
+<li class="has-line-data" data-line-start="94" data-line-end="97">
+<p class="has-line-data" data-line-start="94" data-line-end="96"><input type="checkbox" id="checkbox152" checked="true"><label for="checkbox152">Support for updating existing products in the table based on </label><code>sku</code> as the primary key. (Yes, we know about the kind of data in the file. You need to find a workaround for it)<br>
+I appended an eight length random character string at the end of the SKU to make it unique and to also let the user add more products.</p>
+</li>
+<li class="has-line-data" data-line-start="97" data-line-end="98">
+<p class="has-line-data" data-line-start="97" data-line-end="98"><input type="checkbox" id="checkbox153" checked="true"><label for="checkbox153">All product details are to be ingested into a single table</label></p>
+</li>
+<li class="has-line-data" data-line-start="98" data-line-end="100">
+<p class="has-line-data" data-line-start="98" data-line-end="99"><input type="checkbox" id="checkbox154" checked="true"><label for="checkbox154">An aggregated table on above rows with </label><code>name</code> and <code>no. of products</code> as the columns</p>
+</li>
+</ul>
+<h2 class="code-line" data-line-start=100 data-line-end=101><a id="Point_to_Achive_Not_Done_100"></a>Point to Achive [Not Done]</h2>
+<p class="has-line-data" data-line-start="102" data-line-end="103">I think I have completed all the points given but they can be definetely improved and optimised upon.</p>
+<h2 class="code-line" data-line-start=103 data-line-end=104><a id="Future_Improvements_103"></a>Future Improvements</h2>
+<ul>
+<li class="has-line-data" data-line-start="105" data-line-end="106">Create a <strong>Microservices</strong> architecture utilising Flask or other lightweight frameworks to <strong>improve performance</strong> and for <strong>easy and fast scalibility</strong></li>
+<li class="has-line-data" data-line-start="106" data-line-end="107">Experiment with <strong>Cache and DB Hardware Configuration</strong> to ensure <strong>maximum performance</strong> of specialised tasks such as aggregation and other types of anlalytical operations.</li>
+<li class="has-line-data" data-line-start="107" data-line-end="108">Write <strong>Unit Tests</strong> to ensure <strong>reliability</strong></li>
+<li class="has-line-data" data-line-start="108" data-line-end="109">Research and Use specialised languages and frameworks for these specific tasks.</li>
+<li class="has-line-data" data-line-start="109" data-line-end="110">Make Docker build times faster by using more specialized and optimized images for each specific task.</li>
+</ul>
+<h2 class="code-line" data-line-start=112 data-line-end=113><a id="Architecture_Diagram_112"></a>Architecture Diagram</h2>
+<p class="has-line-data" data-line-start="114" data-line-end="115"><img src="architechture.png?raw=true" alt="Image"></p>
+</div>
+
+
+{% endblock content %}
